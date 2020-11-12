@@ -1,12 +1,5 @@
 """
-Write an application that keeps track of a household’s budget.
-The user can add expenses, income, and recurring costs to find out
-how much they are saving or losing over a period of time.
-
-Optional: Allow the user to specify a date range and
-see the net flow of money in and out of the house budget for that time period.
-
-TEXT as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS").
+Setup for budget_tracker.py, creating tables and defining db functions
 """
 
 import sqlite3
@@ -62,8 +55,8 @@ CREATE TABLE IF NOT EXISTS recurring_costs (
 );
 """
 
-connection = create_connection("budget.sqlite")
-
-execute_query(connection, create_expenses_table)
-execute_query(connection, create_income_table)  
-execute_query(connection, create_recurring_costs_table)  
+if __name__ == '__main__':
+    connection = create_connection("budget.sqlite")
+    execute_query(connection, create_expenses_table)
+    execute_query(connection, create_income_table)
+    execute_query(connection, create_recurring_costs_table)
