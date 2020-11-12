@@ -19,21 +19,39 @@ sql = (f"SELECT {fields} "
 
 import sqlite3
 from sqlite3 import Error
-import budget_tracker_dbsetup
 import pdb
 
-connection = budget_tracker_dbsetup.create_connection("budget.sqlite")
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+    except Error as e:
+        print(e)
 
-def add_expense(day, name, amount, notes = ''):
+    return conn
 
-    query = f'''
+def add_expense(connection, expense):
+    """ adds an expense with parameterized query
+    :param connection: database connection
+    :param expense: expense data
+    """
+    query = '''
     INSERT INTO
       expenses (day, name, amount, notes)
     VALUES
-      ("{day}", "{name}", {amount}, "{notes}")
+      (?, ?, ?, ?)
     '''
-    budget_tracker_dbsetup.execute_query(connection, query)
+    cur = connection.cursor()
+    cur.execute(query, expense)
+    connection.commit()
+    print("New expense added!")
 
 #pdb.set_trace()
 
-add_expense("2020-10-10", "Test", 100)
+connection = create_connection("budget.sqlite")
+add_expense(connection, ("2020-10-10", "Test", 100, "DEFAULT"))
