@@ -20,6 +20,9 @@ sql = (f"SELECT {fields} "
 import sqlite3
 from sqlite3 import Error
 import pdb
+import datetime
+
+DATE_FORMAT = '%Y-%m-%d'
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -51,7 +54,60 @@ def add_expense(connection, expense):
     connection.commit()
     print("New expense added!")
 
+def input_expense():
+    """
+    Here we ask the user for his expense data,
+    running simple validation checks.
+    We'll leave notes as optional.
+    """
+    notes_input = ''
+    amount_input = 0
+    print("Ok, let's add an expense.")
+
+    while True: 
+        date_input = input("Please add a date for your expense (YYYY-MM-DD): ")
+        try:
+            date_obj = datetime.datetime.strptime(date_input, date_format)
+            print(f"Date recorded as {date_obj.date()}")
+            break
+        except ValueError:
+            print("Incorrect data format, should be YYYY-MM-DD")
+            continue
+
+    while True:
+        name_input = str(input("Please add a name for your expense: "))
+        if len(name_input) > 0:
+            print(f"Name recorded as {name_input}")
+            break
+        print("Name can't be empty")
+
+    notes_input = str(input("Please add an optional description for your expense: "))
+    print(f"Description recorded as {notes_input}")
+
+    while True:
+        try:
+            amount_input = float(input("Please add the amount now: "))
+            print(f"Amount recorded as {amount_input}")
+            break
+        except ValueError:
+            print("Incorrect format, it must be a number, try again.")
+            continue
+
+    return date_input, name_input, amount_input, notes_input
+
+def input_income():
+    pass
+
+def add_income():
+    pass
+
+def input_recurring_cost():
+    pass
+
+def add_recurring_cost():
+    pass
+
 #pdb.set_trace()
 
 connection = create_connection("budget.sqlite")
-add_expense(connection, ("2020-10-10", "Test", 100, "DEFAULT"))
+add_expense(connection, input_expense())
