@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS recurring_costs (
   day TEXT NOT NULL,
   name TEXT NOT NULL,
   amount REAL NOT NULL,
-  period TEXT NOT NULL,
+  period INTEGER NOT NULL,
   notes TEXT
 );
 """
