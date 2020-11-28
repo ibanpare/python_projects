@@ -10,11 +10,12 @@ import mechanicalsoup
 
 BASE_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx"
 browser = mechanicalsoup.StatefulBrowser()
-main_page = browser.get(BASE_URL)
-soup = main_page.soup
+
+browser.open(BASE_URL)
+main_page = browser.get_current_page()
 
 #gets top five semesters
-all_semesters = soup.find_all("option")
+all_semesters = main_page.find_all("option")
 top_five_semesters = []
 
 for n in range(0,5):
@@ -46,7 +47,6 @@ poi submittiamo e abbiamo la pagina che ci interessa con i corsi
 poi bisognerà fare selezione del department
 """
 
-browser.open(BASE_URL)
 browser.select_form()
 browser["ctl00$LefyContent$ddlterm"] = "Summer II 2020"
 browser.submit_selected()
@@ -60,3 +60,12 @@ for i in range(0, len(departments_html)):
 print(departments)
 
 #come sopra prende tutte le colonne, aiutooo, più data cleaning o prendiamo e mostriamo diversamente
+
+"""
+ci sarà da fare classe dept che ha come attr
+dept code
+name
+course prefixex
+
+da capire se un'altra per i corsi e come legarle, serve carta
+"""
