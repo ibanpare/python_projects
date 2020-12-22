@@ -6,66 +6,37 @@
  Once you run, it will show the last 5 semester
  (fall, spring, summer-only, (not wintersemester or, may mini semester))"""
 
-import mechanicalsoup
+import bs4
+import requests
+import time
 
 BASE_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx"
-browser = mechanicalsoup.StatefulBrowser()
+TERM_1_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx?Term=202120"
+TERM_2_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx?Term=202110"
+TERM_3_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx?Term=202080"
+TERM_4_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx?Term=202070"
+TERM_5_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx?Term=202050"
 
-browser.open(BASE_URL)
-main_page = browser.get_current_page()
+home_res = requests.get(BASE_URL)
+home_soup = bs4.BeautifulSoup(home_res.content, "lxml")
 
-#gets top five semesters
-all_semesters = main_page.find_all("option")
-top_five_semesters = []
+semesters = home_soup.find_all("option")
+available_semesters = semesters[0:5]
 
-for n in range(0,5):
-	last_semester = all_semesters[n].get_text()
-	top_five_semesters.append(last_semester)
+print("The available semesters are:")
+for semester in available_semesters:
+    print(semester.text)
 
-"""
-User will make selection, then, you will show departments for the selected semester (Fall 2020). Note that selected semester is visible before a ">" sign.
+class DepartmentSelect():
+    def __init__(self, department_url):
+        self.url = department_url
+        self.res = requests.get(self.url)
+        time.sleep(2)
+        self.soup = bs4.BeautifulSoup(self.res.content, "lxml")
+        self.rows = self.soup.find_all("a", class_="nav")
 
-Fall 2020> Select a department:
-1) Undeclared
-2) Accounting and Finance
-3) Art
-4) Ag Science & Natural Resources
-...
-...
-30) Social Work
-31) Theatre
-Q)Go back
+#this is for testing
+summer2 = DepartmentSelect( "http://appsprod.tamuc.edu/Schedule/Schedule.aspx?Term=202050")
 
-Selection: 3
-"""
-
-"""
-qui selezioniamo il form che ci interessa in base al nome e impostiamo
-il valore con il semestre che l'utente ha scelto
-poi submittiamo e abbiamo la pagina che ci interessa con i corsi
-
-poi bisognerà fare selezione del department
-"""
-
-browser.select_form()
-browser["ctl00$LefyContent$ddlterm"] = "Summer II 2020"
-browser.submit_selected()
-semester_page = browser.get_current_page()
-
-departments_html = semester_page.find_all("a", class_ = "nav")
-departments = []
-for i in range(0, len(departments_html)):
-	departments.append(departments_html[i].get_text())
-
-print(departments)
-
-#come sopra prende tutte le colonne, aiutooo, più data cleaning o prendiamo e mostriamo diversamente
-
-"""
-ci sarà da fare classe dept che ha come attr
-dept code
-name
-course prefixex
-
-da capire se un'altra per i corsi e come legarle, serve carta
-"""
+#to do: siamo arrivati ad avere una lista di dipartimenti per semestre, #bisogna stamparla bene e parsare la pagina corsi per ogni dipartimento.
+#attenzione anche a cosa dovranno fare sti corsi per capire come salvarli
