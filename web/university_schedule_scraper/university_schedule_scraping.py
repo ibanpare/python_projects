@@ -6,10 +6,9 @@
  Once you run, it will show the last 5 semester
  (fall, spring, summer-only, (not wintersemester or, may mini semester))"""
 
-import bs4
 from collections import namedtuple
+import bs4
 import requests
-import time
 
 BASE_URL = "http://appsprod.tamuc.edu/Schedule/Schedule.aspx"
 
@@ -29,10 +28,16 @@ for semester in available_semesters:
     print(semester.text)
 
 class DepartmentSelect():
+    """
+    Class that scrapes departments for the selected semester
+    
+    TO DO:
+    it should know which semester it's in
+    metodi vari per sortare corsi
+    """
     def __init__(self, department_url):
         self.url = department_url
         self.res = requests.get(self.url)
-        time.sleep(2)
         self.soup = bs4.BeautifulSoup(self.res.content, "lxml")
         self.rows = self.soup.find_all("a", class_="nav")
         self.Department = namedtuple("Department", [
@@ -46,8 +51,6 @@ class DepartmentSelect():
             self.departments.append(self.Department(self.rows[i].text,
                 self.rows[i + 1].text, self.rows[i + 2].text))
             i += 3
-        #che poi fare tutta sta roba all'init booh, forse ci sta, il resto però
-        #penso meglio con metodi
 
 #this is for testing
 summer2 = DepartmentSelect( "http://appsprod.tamuc.edu/Schedule/Schedule.aspx?Term=202050")
