@@ -51,12 +51,20 @@ def query_url():
 res = requests.get(query_url(),  headers=headers)
 soup = bs4.BeautifulSoup(res.content, "lxml")
 
-print(res.status_code)
-print(soup.title)
-
 apartment_name = soup.find(class_="js-placardTitle title")
 apartment_address = soup.find(class_="property-address js-url")
 number_of_beds = soup.find(class_="bed-range")
 rent = soup.find(class_="price-range")
 amenities = soup.find(class_="property-amenities")
 apartment_url = soup.find("a", class_="property-link")
+
+print()
+print(f"Page title is {soup.title.text}")
+print()
+print(f"First apartment name: {apartment_name.text}")
+print()
+print(f"First apartment address: {apartment_address.text}")
+print(f"Number of beds: {number_of_beds.text}")
+print(f"Rent: {rent.text}")
+print(f"Amenities: {amenities.text}")
+print(f"Url: {apartment_url['href']}")
